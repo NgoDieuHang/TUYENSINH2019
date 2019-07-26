@@ -13,8 +13,6 @@ namespace TS_2018.Model.Database
         [StringLength(8)]
         public string SBD { get; set; }
 
-        public int ID_BHYT { get; set; }
-
         public int ID_CT { get; set; }
 
         public decimal TienBHYT { get; set; }
@@ -35,7 +33,9 @@ namespace TS_2018.Model.Database
 
         public DateTime? NgayUpdate { get; set; }
 
-        public virtual BHYT BHYT { get; set; }
+        public int IdUserPrint { get; set; }
+
+        public DateTime NgayPrint { get; set; }
 
         public virtual CHUONGTRINH CHUONGTRINH { get; set; }
 

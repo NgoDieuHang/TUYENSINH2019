@@ -16,7 +16,7 @@ namespace TS_2018.View
         private FuncSV controllerSv;
         private bool isFormLoaded;
         private decimal tongTien;
-
+        const decimal bhyt = 6000000;
         public ListOfSV()
         {
             InitializeComponent();
@@ -37,9 +37,9 @@ namespace TS_2018.View
             cbb_nganh.DisplayMember = "Ten_Nganh";
             cbb_nganh.ValueMember = "ID_Nganh";
 
-            cbb_BHYT.DataSource = controllerSv.GetListBHYT();
-            cbb_BHYT.DisplayMember = "Loai_BHYT";
-            cbb_BHYT.ValueMember = "ID_BHYT";
+            //cbb_BHYT.DataSource = controllerSv.GetListBHYT();
+            //cbb_BHYT.DisplayMember = "Loai_BHYT";
+            //cbb_BHYT.ValueMember = "ID_BHYT";
 
             cbb_CT.DataSource = controllerSv.GetAllChuongTrinh();
             cbb_CT.DisplayMember = "Ten_CT";
@@ -57,7 +57,7 @@ namespace TS_2018.View
             {
                 splitContainer1.Panel2.Enabled = false;
 
-                cbb_BHYT.SelectedIndex = -1;
+                //cbb_BHYT.SelectedIndex = -1;
                 cbb_CT.SelectedIndex = -1;
                 cbb_nganh.SelectedIndex = -1;
 
@@ -146,7 +146,7 @@ namespace TS_2018.View
                 checkGT10.Checked = sv.PHIEUNHAPHOC.GT10;
                 checkGT11.Checked = sv.PHIEUNHAPHOC.GT11;
 
-                cbb_BHYT.SelectedValue = sv.BIENLAI.ID_BHYT;
+                //cbb_BHYT.SelectedValue = sv.BIENLAI.ID_BHYT;
                 cbb_CT.SelectedValue = sv.BIENLAI.ID_CT;
 
                 checkDaNopHocPhi.Checked = sv.DaNopHocPhi;
@@ -177,6 +177,7 @@ namespace TS_2018.View
                     Tel = txtTel.Text,
                     Address = txtAddress.Text,
                     ID_Nganh = cbb_nganh.SelectedValue.ToString(),
+                    ID_CT = (int)cbb_CT.SelectedValue,
                     CMND = txtCMND.Text,
                     Lop = txtLop.Text,
                     DaNopHocPhi = checkDaNopHocPhi.Checked,
@@ -197,13 +198,14 @@ namespace TS_2018.View
                     },
                     BIENLAI = new BIENLAI()
                     {
-                        ID_BHYT = Convert.ToInt32(cbb_BHYT.SelectedValue),
+                        
+                        //ID_BHYT = Convert.ToInt32(cbb_BHYT.SelectedValue),
                         ID_CT = Convert.ToInt32(cbb_CT.SelectedValue),
                         TienAVDV = 50000,
                         TienBHTT = 80000,
                         TienKhamSK = 77000,
                         TienGDQP = 670000,
-                        TienBHYT = controllerSv.GetTienBHYT(Convert.ToInt32(cbb_BHYT.SelectedValue)),
+                        TienBHYT = bhyt,
                         TienHocPhi = controllerSv.GetHocPhiTheoChuongTrinh(Convert.ToInt32(cbb_CT.SelectedValue)),
                         TongTien = tongTien,
                         IdUserUpdate = CanBoUser.ID,
@@ -223,7 +225,10 @@ namespace TS_2018.View
                                     MessageBoxIcon.Question) == DialogResult.Yes)
                             {
                                 panel1.Enabled = false;
-                                Print(@"\TS2018.docx");
+                                if(Print(@"\TS2018.docx"))
+                                {
+
+                                }
                                 panel1.Enabled = true;
                             }
                         }
@@ -248,6 +253,7 @@ namespace TS_2018.View
                             {
                                 panel1.Enabled = false;
                                 Print(@"\TS20180-only1.docx");
+                                controllerSv.UpdateInforUserPrint(sv.SBD, CanBoUser.ID);
                                 panel1.Enabled = true;
                             }
                         }
@@ -346,11 +352,11 @@ namespace TS_2018.View
                 FindAndReplace(word, "#diaChi", sv.Address);
                 FindAndReplace(word, "#soCMND", sv.CMND);
                 FindAndReplace(word, "#tenCanBo", CanBoUser.HoTenCanBo);
-                FindAndReplace(word, "#tenLoaiBHYT", sv.BIENLAI.BHYT.Loai_BHYT);
+                FindAndReplace(word, "#tenLoaiBHYT", bhyt);
                 FindAndReplace(word, "#soTien", controllerSv.HienThiTienTe(sv.BIENLAI.TongTien.ToString()));
                 FindAndReplace(word, "#tienBangChu", controllerSv.DocTien(sv.BIENLAI.TongTien.ToString()));
                 FindAndReplace(word, "#tienChuongTrinh ", controllerSv.HienThiTienTe(sv.BIENLAI.CHUONGTRINH.SoTien.ToString()));
-                FindAndReplace(word, "#tienBaoHiem ", controllerSv.HienThiTienTe(sv.BIENLAI.BHYT.LoaiTien.ToString()));
+                FindAndReplace(word, "#tienBaoHiem ", controllerSv.HienThiTienTe(bhyt.ToString()));
 
                 FindAndReplace(word, "#gt1", sv.PHIEUNHAPHOC.GT1 ? "X" : "O");
                 FindAndReplace(word, "#gt2", sv.PHIEUNHAPHOC.GT2 ? "X" : "O");
@@ -375,17 +381,25 @@ namespace TS_2018.View
             }
         }
 
-        private void Print(string name)
+        private bool Print(string name)
         {
-            Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
-            object path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + name;
-            object read = "ReadWrite";
-            object readOnly = false;
-            object o = System.Reflection.Missing.Value;
-            Document oDoc = word.Documents.Add(ref path, ref o, ref o, ref o);
-            word.Visible = true;
-            ReplaceContent(word);
-            oDoc.PrintOut();
+            try
+            {
+                Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
+                object path = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath) + name;
+                object read = "ReadWrite";
+                object readOnly = false;
+                object o = System.Reflection.Missing.Value;
+                Document oDoc = word.Documents.Add(ref path, ref o, ref o, ref o);
+                word.Visible = true;
+                ReplaceContent(word);
+                oDoc.PrintOut();
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
 
         private void FindAndReplace(Microsoft.Office.Interop.Word.Application doc, object findText, object replaceWithText)
@@ -461,7 +475,7 @@ namespace TS_2018.View
         private void TinhTongTien()
         {
             tongTien = 0;
-            tongTien += controllerSv.TinhTienHocPhi(Convert.ToInt32(cbb_CT.SelectedValue), Convert.ToInt32(cbb_BHYT.SelectedValue));
+            tongTien += controllerSv.TinhTienHocPhi(Convert.ToInt32(cbb_CT.SelectedValue), bhyt);
             txtTien.Text = controllerSv.HienThiTienTe(tongTien.ToString());
         }
 
