@@ -227,7 +227,7 @@ namespace TS_2018.View
                                 panel1.Enabled = false;
                                 if(Print(@"\TS2018.docx"))
                                 {
-
+                                    controllerSv.UpdateInforUserPrint(sv.SBD, CanBoUser.ID);
                                 }
                                 panel1.Enabled = true;
                             }
@@ -252,9 +252,11 @@ namespace TS_2018.View
                                     MessageBoxIcon.Warning) == DialogResult.Yes)
                             {
                                 panel1.Enabled = false;
-                                Print(@"\TS20180-only1.docx");
-                                controllerSv.UpdateInforUserPrint(sv.SBD, CanBoUser.ID);
-                                panel1.Enabled = true;
+                                if (Print(@"\TS20180-only1.docx"))
+                                {
+                                    controllerSv.UpdateInforUserPrint(sv.SBD, CanBoUser.ID);
+                                }
+                                    panel1.Enabled = true;
                             }
                         }
                         else
