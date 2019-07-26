@@ -97,7 +97,7 @@ namespace TS_2018.Controller
                 {
                     if (type == 0)
                     {
-                        return context.SINHVIEN.Where(x => !x.DaXongNgay21 && x.NGANHHOC.IDUserTuyenSinh == idUser
+                        return context.SINHVIEN.Where(x => x.NGANHHOC.IDUserTuyenSinh == idUser
                                                            && (x.SBD.Contains(keyword) || x.Name.Contains(keyword) || x.CMND.Contains(keyword) || x.Lop.Contains(keyword))
                                                            ).Select(x => new ViewListSV()
                                                            {
@@ -113,7 +113,7 @@ namespace TS_2018.Controller
                     }
                     else if (type == 1)
                     {
-                        return context.SINHVIEN.Where(x => !x.DaXongNgay21 && x.NGANHHOC.IDUserTuyenSinh == idUser
+                        return context.SINHVIEN.Where(x => x.NGANHHOC.IDUserTuyenSinh == idUser
                                                            && (x.SBD.Contains(keyword) || x.Name.Contains(keyword) || x.CMND.Contains(keyword) || x.Lop.Contains(keyword)) && x.DaNhapHoc
                                                            ).Select(x => new ViewListSV()
                                                            {
@@ -129,7 +129,7 @@ namespace TS_2018.Controller
                     }
                     else
                     {
-                        return context.SINHVIEN.Where(x => !x.DaXongNgay21 && x.NGANHHOC.IDUserTuyenSinh == idUser
+                        return context.SINHVIEN.Where(x => x.NGANHHOC.IDUserTuyenSinh == idUser
                                                            && (x.SBD.Contains(keyword) || x.Name.Contains(keyword) || x.CMND.Contains(keyword) || x.Lop.Contains(keyword)) && !x.DaNhapHoc
                                                            ).Select(x => new ViewListSV()
                                                            {
@@ -191,33 +191,21 @@ namespace TS_2018.Controller
             }
         }
 
-        public List<BHYT> GetListBHYT()
-        {
-            try
-            {
-                return context.BHYT.ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw e;
-            }
-        }
 
-        public decimal TinhTienHocPhi(int idChuongTrinh, int idBHYT)
+        public decimal TinhTienHocPhi(int idChuongTrinh, decimal bhyt)
         {
             try
             {
-                BHYT bhyt = context.BHYT.FirstOrDefault(x => x.ID_BHYT == idBHYT);
                 CHUONGTRINH ct = context.CHUONGTRINH.FirstOrDefault(x => x.ID_CT == idChuongTrinh);
-                if (bhyt != null && ct != null)
+                if (ct != null)
                 {
-                    return Convert.ToDecimal(bhyt.LoaiTien + ct.SoTien + 670000 + 77000 + 80000 + 50000);
+                    return Convert.ToDecimal(bhyt + ct.SoTien + 670000 + 77000 + 80000 + 50000);
                 }
                 else
                 {
                     return 0;
                 }
+                return 0;
             }
             catch (Exception e)
             {
@@ -226,26 +214,26 @@ namespace TS_2018.Controller
             }
         }
 
-        public decimal GetTienBHYT(int idBHYT)
-        {
-            try
-            {
-                BHYT bhyt = context.BHYT.FirstOrDefault(x => x.ID_BHYT == idBHYT);
-                if (bhyt != null)
-                {
-                    return Convert.ToDecimal(bhyt.LoaiTien);
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw e;
-            }
-        }
+        //public decimal GetTienBHYT(int idBHYT)
+        //{
+        //    try
+        //    {
+        //        //BHYT bhyt = context.BHYT.FirstOrDefault(x => x.ID_BHYT == idBHYT);
+        //        if (bhyt != null)
+        //        {
+        //            return Convert.ToDecimal(bhyt.LoaiTien);
+        //        }
+        //        else
+        //        {
+        //            return 0;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw e;
+        //    }
+        //}
 
         public decimal GetHocPhiTheoChuongTrinh(int idCT)
         {
@@ -323,7 +311,7 @@ namespace TS_2018.Controller
                 {
                     if (daDongTien)
                     {
-                        sv.BIENLAI.ID_BHYT = svIn.BIENLAI.ID_BHYT;
+                        //sv.BIENLAI.ID_BHYT = svIn.BIENLAI.ID_BHYT;
                         sv.BIENLAI.ID_CT = svIn.BIENLAI.ID_CT;
                         sv.BIENLAI.TongTien = svIn.BIENLAI.TongTien;
                         sv.BIENLAI.TienAVDV = svIn.BIENLAI.TienAVDV;
@@ -336,7 +324,7 @@ namespace TS_2018.Controller
                     }
                     else
                     {
-                        sv.BIENLAI.ID_BHYT = svIn.BIENLAI.ID_BHYT;
+                        //sv.BIENLAI.ID_BHYT = svIn.BIENLAI.ID_BHYT;
                         sv.BIENLAI.ID_CT = svIn.BIENLAI.ID_CT;
                         sv.BIENLAI.TongTien = 0;
                         sv.BIENLAI.TienAVDV = 0;
@@ -379,6 +367,30 @@ namespace TS_2018.Controller
             }
         }
 
+        public bool UpdateInforUserPrint(string sbd, int idUserPrint)
+        {
+            try
+            {
+                SINHVIEN sv = context.SINHVIEN.FirstOrDefault(x => x.SBD == sbd);
+                if (sv != null)
+                {
+                    sv.BIENLAI.IdUserPrint = idUserPrint;
+                    sv.BIENLAI.NgayUpdate = DateTime.Now;
+                    context.LOGSPRINT.Add(new LOGSPRINT()
+                    {
+                        SBD = sbd,
+                        IdUserPrint = idUserPrint,
+                        DatePrint = DateTime.Now
+                    });
+                    context.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         private String GetMD5(string txt)
         {
             String str = "";

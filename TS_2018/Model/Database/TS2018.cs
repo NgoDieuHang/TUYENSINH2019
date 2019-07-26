@@ -12,7 +12,7 @@ namespace TS_2018.Model.Database
         {
         }
 
-        public virtual DbSet<BHYT> BHYT { get; set; }
+        //public virtual DbSet<BHYT> BHYT { get; set; }
         public virtual DbSet<BIENLAI> BIENLAI { get; set; }
         public virtual DbSet<CHUONGTRINH> CHUONGTRINH { get; set; }
         public virtual DbSet<NGANHHOC> NGANHHOC { get; set; }
@@ -20,13 +20,13 @@ namespace TS_2018.Model.Database
         public virtual DbSet<SINHVIEN> SINHVIEN { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<USER> USER { get; set; }
+        public virtual DbSet<LOGSPRINT> LOGSPRINT { get; set; }
+
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BHYT>()
-                .HasMany(e => e.BIENLAI)
-                .WithRequired(e => e.BHYT)
-                .WillCascadeOnDelete(false);
+            
 
             modelBuilder.Entity<BIENLAI>()
                 .Property(e => e.TienBHYT)
@@ -68,6 +68,11 @@ namespace TS_2018.Model.Database
             modelBuilder.Entity<NGANHHOC>()
                 .HasMany(e => e.SINHVIEN)
                 .WithRequired(e => e.NGANHHOC)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<CHUONGTRINH>()
+                .HasMany(e => e.SINHVIEN)
+                .WithRequired(e => e.CHUONGTRINH)
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<PHIEUNHAPHOC>()

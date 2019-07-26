@@ -10,12 +10,15 @@ namespace TS_2018.Model.Database
     public partial class SINHVIEN
     {
         [Key]
-        [StringLength(8)]
+        [StringLength(15)]
         public string SBD { get; set; }
 
         [Required]
         [StringLength(50)]
         public string ID_Nganh { get; set; }
+
+        [Required]
+        public int ID_CT { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -38,13 +41,14 @@ namespace TS_2018.Model.Database
         public bool DaNopHocPhi { get; set; }
 
         public bool DaNhapHoc { get; set; }
-
-        public bool DaXongNgay21 { get; set; }
+        public string LoaiXet { get; set; }
 
         public virtual BIENLAI BIENLAI { get; set; }
 
         public virtual NGANHHOC NGANHHOC { get; set; }
 
         public virtual PHIEUNHAPHOC PHIEUNHAPHOC { get; set; }
+        public virtual CHUONGTRINH CHUONGTRINH { get; set; }
+
     }
 }

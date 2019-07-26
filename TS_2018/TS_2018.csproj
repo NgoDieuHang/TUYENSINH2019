@@ -62,9 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\FuncSV.cs" />
-    <Compile Include="Model\Database\BHYT.cs" />
     <Compile Include="Model\Database\BIENLAI.cs" />
     <Compile Include="Model\Database\CHUONGTRINH.cs" />
+    <Compile Include="Model\Database\LOGSPRINT.cs" />
     <Compile Include="Model\Database\NGANHHOC.cs" />
     <Compile Include="Model\Database\PHIEUNHAPHOC.cs" />
     <Compile Include="Model\Database\SINHVIEN.cs" />
@@ -124,7 +124,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
